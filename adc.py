@@ -84,3 +84,16 @@ class AbstractModel:
 		resp = self.spi.xfer2(data)
 		return self.process(resp)
 
+
+class MCP3208(AbstractModel):
+
+	name = 'MCP3208'
+	channels = 8
+	resolution = 12  # 4096
+	max_speed = 1000000  # 1MHz
+
+
+if __name__ == '__main__':
+
+    adc = ADC(MCP3208)
+    print(adc.measure(0))
