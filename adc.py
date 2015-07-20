@@ -23,7 +23,7 @@ class ADC:
 	def close(self):
 		self.spi.close()
 
-	def measure(self, channel, sgl_diff=self.SINGLE):
+	def measure(self, channel, sgl_diff=SINGLE):
 		''' Measures vallue on given channel with SINGLE or DIFF mode; returns integer value '''
 		val = self.model.measure(channel, sgl_diff)
 		return val
@@ -59,6 +59,10 @@ class AbstractModel:
 			bits = bits >> 8
 		return bytes
 
+	def bytesToBits(self, bytes):
+		''' Converts array of bytes to string of bits '''
+		return "".join(map(lambda x: bin(x)[2:].zfill(8), bytes))
+
 	def process(self, resp):
 		''' Processes response (array of bytes) from SPI communication and returns extracted value '''
 		dontcare = 0
@@ -72,10 +76,6 @@ class AbstractModel:
 		bits = self.bytesToBits(resp)
 		value = int(bits[dontcare:(dontcare+self.resolution)], 2)
 		return value
-
-	def bytesToBits(self, bytes):
-		''' Converts array of bytes to string of bits '''
-		return "".join(map(lambda x: bin(x)[2:].zfill(8), resp))
 
 	def measure(self, channel, sgl_diff):
 		''' Measures value on given channel with SINGLE or DIFF mode; returns integer between 0 and (2^resolution) '''
